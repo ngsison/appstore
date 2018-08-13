@@ -15,6 +15,14 @@ class CategoryCell: UICollectionViewCell {
     // MARK: PROPERTIES
     let appCellIdentifier = "appCellIdentifier"
     
+    let categoryNameLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Best New Apps"
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
     let appCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.horizontal
@@ -28,6 +36,13 @@ class CategoryCell: UICollectionViewCell {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         return collectionView
+    }()
+    
+    let divider: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(white: 0.4, alpha: 0.4)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
     }()
     
     
@@ -58,7 +73,11 @@ extension CategoryCell: UICollectionViewDataSource, UICollectionViewDelegate, UI
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 110, height: self.frame.height)
+        return CGSize(width: 110, height: self.frame.height - 30)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(0, 14, 0, 14)
     }
     
 }
@@ -67,27 +86,43 @@ extension CategoryCell: UICollectionViewDataSource, UICollectionViewDelegate, UI
 
 // MARK: EXTENSION - SETUPVIEWS
 extension CategoryCell {
+    
     func setupViews() {
         self.backgroundColor = UIColor.white
+        self.addSubview(categoryNameLabel)
         self.addSubview(appCollectionView)
+        self.addSubview(divider)
         
         appCollectionView.dataSource = self
         appCollectionView.delegate = self
-        
         appCollectionView.register(AppCell.self, forCellWithReuseIdentifier: appCellIdentifier)
         
         self.addConstraints(NSLayoutConstraint.constraints(
-            withVisualFormat: "H:|-0-[v0]-0-|",
+            withVisualFormat: "H:|-14-[v0]|",
+            options: NSLayoutFormatOptions(),
+            metrics: nil,
+            views: ["v0": categoryNameLabel]
+        ))
+        
+        self.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|[v0]|",
             options: NSLayoutFormatOptions(),
             metrics: nil,
             views: ["v0": appCollectionView]
         ))
         
         self.addConstraints(NSLayoutConstraint.constraints(
-            withVisualFormat: "V:|[v0]|",
+            withVisualFormat: "V:|[v0(30)][v1][v2(1)]|",
             options: NSLayoutFormatOptions(),
             metrics: nil,
-            views: ["v0": appCollectionView]
+            views: ["v0": categoryNameLabel, "v1": appCollectionView, "v2": divider]
+        ))
+        
+        self.addConstraints(NSLayoutConstraint.constraints(
+            withVisualFormat: "H:|-14-[v0]|",
+            options: NSLayoutFormatOptions(),
+            metrics: nil,
+            views: ["v0": divider]
         ))
     }
 }
