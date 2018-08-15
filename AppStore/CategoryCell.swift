@@ -14,6 +14,13 @@ class CategoryCell: UICollectionViewCell {
     
     // MARK: PROPERTIES
     let appCellIdentifier = "appCellIdentifier"
+    var appCategory: AppCategory? {
+        didSet {
+            if let name = appCategory?.name {
+                categoryNameLabel.text = name
+            }
+        }
+    }
     
     let categoryNameLabel: UILabel = {
         let label = UILabel()
@@ -64,11 +71,14 @@ class CategoryCell: UICollectionViewCell {
 extension CategoryCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return appCategory?.apps?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: appCellIdentifier, for: indexPath) as! AppCell
+        
+        cell.app = appCategory?.apps?[indexPath.item]
+        
         return cell
     }
     

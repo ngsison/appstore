@@ -14,7 +14,7 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
     
     // MARK: PROPERTIES
     private let categoryCellIdentifier = "categoryCell"
-    
+    var appCategories: [AppCategory]?
     
     
     // MARK: OVERRIDES
@@ -22,20 +22,24 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
         super.viewDidLoad()
        
         self.title = "Featured"
-        
+
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: categoryCellIdentifier)
+    
+        appCategories = AppCategory.sampleAppCategories()
     }
 
  
     
     // MARK: UICOLLECTIONVIEWCONTROLLER
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return appCategories?.count ?? 0
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCellIdentifier, for: indexPath) as! CategoryCell
+        
+        cell.appCategory = appCategories?[indexPath.item]
         
         return cell
     }

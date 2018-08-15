@@ -14,9 +14,21 @@ class AppCell: UICollectionViewCell {
     
     
     // MARK: PROPERTIES
+    var app: App? {
+        didSet {
+            nameLabel.text = app?.name
+            categoryLabel.text = app?.category
+            if let price = app?.price {
+                priceLabel.text = "$\(price.stringValue)"
+            } else {
+                priceLabel.text = ""
+            }
+            imageView.image = UIImage(named: app?.imageName ?? "")
+        }
+    }
+    
     let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = #imageLiteral(resourceName: "frozen")
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 16
         imageView.layer.masksToBounds = true
@@ -25,7 +37,6 @@ class AppCell: UICollectionViewCell {
     
     let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Disney Build It: Frozen"
         label.font = UIFont.systemFont(ofSize: 14)
         label.numberOfLines = 2
         return label
@@ -33,7 +44,6 @@ class AppCell: UICollectionViewCell {
     
     let categoryLabel: UILabel = {
         let label = UILabel()
-        label.text = "Entertainment"
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor.darkGray
         return label
@@ -41,7 +51,6 @@ class AppCell: UICollectionViewCell {
     
     let priceLabel: UILabel = {
         let label = UILabel()
-        label.text = "$3.99"
         label.font = UIFont.systemFont(ofSize: 13)
         label.textColor = UIColor.darkGray
         return label
