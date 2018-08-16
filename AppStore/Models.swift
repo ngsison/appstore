@@ -6,46 +6,58 @@
 //  Copyright © 2018 Nathaniel Brion Sison. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 
 
 class AppCategory: NSObject {
+    
     var name: String?
     var apps: [App]?
+    var type: String?
     
-    static func sampleAppCategories() -> [AppCategory] {
+    static func fetchFeaturedApps(onSuccess: @escaping ([AppCategory]) -> ()) {
+        let urlString = "https://api.letsbuildthatapp.com/appstore/featured"
+        let url = URL(string: urlString)!
         
-        let bestNewAppsCategory = AppCategory()
-        bestNewAppsCategory.name = "Best New Apps"
-        
-        var bestNewAppsApps = [App]()
-        
-        let frozen = App()
-        frozen.name = "Disney Build It: Frozen"
-        frozen.imageName = "frozen"
-        frozen.category = "Entertainment"
-        frozen.price = 3.99
-        
-        bestNewAppsApps.append(frozen)
-        bestNewAppsCategory.apps = bestNewAppsApps
-        
-        
-        let bestNewGamesCategory = AppCategory()
-        bestNewGamesCategory.name = "Best New Games"
-        
-        var bestNewGamesApps = [App]()
-        
-        let telepaint = App()
-        telepaint.name = "telepaint"
-        telepaint.imageName = "telepaint"
-        telepaint.category = "Games"
-        telepaint.price = 2.99
-        
-        bestNewGamesApps.append(telepaint)
-        bestNewGamesCategory.apps = bestNewGamesApps
-        
-        return [bestNewAppsCategory, bestNewGamesCategory]
+        URLSession.shared.dataTask(with: url) { (data: Data?, response: URLResponse?, error: Error?) in
+            if error != nil {
+                print(error!)
+                return
+            }
+            
+            do {
+                let json = try(JSONSerialization.jsonObject(with: data!, options: .mutableContainers)) as! [String:AnyObject]
+                let jsonCategories = json["categories"] as! [[String: AnyObject]]
+                
+                var categories = [AppCategory]()
+                
+                for jsonCategory in jsonCategories {
+                    let category = AppCategory()
+                    category.name = jsonCategory["name"] as? String
+                    category.type = jsonCategory["type"] as? String
+
+                    category.apps = [App]()
+                    for dict in jsonCategory["apps"] as! [[String: AnyObject]] {
+                        let app = App()
+                        app.id = dict["Id"] as? NSNumber
+                        app.name = dict["Name"] as? String
+                        app.category = dict["Category"] as? String
+                        app.price = dict["Price"] as? NSNumber
+                        app.imageName = dict["ImageName"] as? String
+                        
+                        category.apps?.append(app)
+                    }
+                    
+                    categories.append(category)
+                }
+
+                DispatchQueue.main.async(execute: {
+                    onSuccess(categories)
+                })
+                
+            } catch {}
+        }.resume()
     }
 }
 

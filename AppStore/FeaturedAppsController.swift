@@ -26,7 +26,10 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: categoryCellIdentifier)
     
-        appCategories = AppCategory.sampleAppCategories()
+        AppCategory.fetchFeaturedApps { (appCategories) in
+            self.appCategories = appCategories
+            self.collectionView?.reloadData()
+        }
     }
 
  
