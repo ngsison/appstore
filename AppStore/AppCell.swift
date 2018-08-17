@@ -14,6 +14,8 @@ class AppCell: UICollectionViewCell {
     
     
     // MARK: PROPERTIES
+    static let identifier = "appCellIdentifier"
+    
     var app: App? {
         didSet {
             nameLabel.text = app?.name
@@ -67,12 +69,10 @@ class AppCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-
-
-// MARK: EXTENSION - SETUPVIEWS
-extension AppCell {
+    
+    
+    
+    // MARK: SETUP VIEWS
     func setupViews() {
         self.addSubview(imageView)
         self.addSubview(nameLabel)
@@ -85,6 +85,7 @@ extension AppCell {
         priceLabel.frame = CGRect(x: 0, y: self.frame.width + 58, width: self.frame.width, height: 20)
     }
 }
+
 
 
 

@@ -13,8 +13,8 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
     
     
     // MARK: PROPERTIES
-    private let categoryCellIdentifier = "categoryCell"
     var appCategories: [AppCategory]?
+    
     
     
     // MARK: OVERRIDES
@@ -24,7 +24,8 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
         self.title = "Featured"
 
         collectionView?.backgroundColor = UIColor.white
-        collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: categoryCellIdentifier)
+        collectionView?.register(CategoryCell.self, forCellWithReuseIdentifier: CategoryCell.identifier)
+        collectionView?.register(LargeCategoryCell.self, forCellWithReuseIdentifier: LargeCategoryCell.largeIdentifier)
     
         AppCategory.fetchFeaturedApps { (appCategories) in
             self.appCategories = appCategories
@@ -40,8 +41,16 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: categoryCellIdentifier, for: indexPath) as! CategoryCell
         
+        if indexPath.item == 2 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: LargeCategoryCell.largeIdentifier, for: indexPath) as! LargeCategoryCell
+            cell.appCategory = appCategories?[indexPath.item]
+
+            return cell
+        }
+        
+            
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCell.identifier, for: indexPath) as! CategoryCell
         cell.appCategory = appCategories?[indexPath.item]
         
         return cell
@@ -51,6 +60,11 @@ class FeaturedAppsController: UICollectionViewController, UICollectionViewDelega
 
     // MARK: UICOLLECTIONVIEWDELEGATEFLOWLAYOUT
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if indexPath.item == 2 {
+            return CGSize(width: view.frame.width, height: 160)
+        }
+        
         return CGSize(width: view.frame.width, height: 240)
     }
 }

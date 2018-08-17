@@ -13,7 +13,8 @@ class CategoryCell: UICollectionViewCell {
     
     
     // MARK: PROPERTIES
-    let appCellIdentifier = "appCellIdentifier"
+    static let identifier = "categoryCellIdentifier"
+    
     var appCategory: AppCategory? {
         didSet {
             if let name = appCategory?.name {
@@ -63,40 +64,9 @@ class CategoryCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
-
-
-
-// MARK: EXTENSION - UICOLLECTIONVIEW
-extension CategoryCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return appCategory?.apps?.count ?? 0
-    }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: appCellIdentifier, for: indexPath) as! AppCell
-        
-        cell.app = appCategory?.apps?[indexPath.item]
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 110, height: self.frame.height - 30)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(0, 14, 0, 14)
-    }
-    
-}
-
-
-
-// MARK: EXTENSION - SETUPVIEWS
-extension CategoryCell {
-    
+    // MARK: SETUP VIEWS
     func setupViews() {
         self.backgroundColor = UIColor.white
         self.addSubview(categoryNameLabel)
@@ -105,7 +75,7 @@ extension CategoryCell {
         
         appCollectionView.dataSource = self
         appCollectionView.delegate = self
-        appCollectionView.register(AppCell.self, forCellWithReuseIdentifier: appCellIdentifier)
+        appCollectionView.register(AppCell.self, forCellWithReuseIdentifier: AppCell.identifier)
         
         self.addConstraints(NSLayoutConstraint.constraints(
             withVisualFormat: "H:|-14-[v0]|",
@@ -136,3 +106,33 @@ extension CategoryCell {
         ))
     }
 }
+
+
+
+// MARK: EXTENSION - UICOLLECTIONVIEW
+extension CategoryCell: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return appCategory?.apps?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AppCell.identifier, for: indexPath) as! AppCell
+        
+        cell.app = appCategory?.apps?[indexPath.item]
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: 110, height: self.frame.height - 30)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsetsMake(0, 14, 0, 14)
+    }
+    
+}
+
+
+
